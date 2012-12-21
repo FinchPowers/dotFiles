@@ -1,0 +1,8 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_1='/home/fmlheureux/workspace/StarCluster/starcluster/balancers'
+let g:netrw_dirhist_2='/home/fmlheureux/workspace/StarCluster/starcluster/balancers/sge'
+let g:netrw_dirhist_3='/home/fmlheureux/workspace/StarCluster'
+let g:netrw_dirhist_4='/home/fmlheureux/workspace/StarCluster/starcluster'
+let g:netrw_dirhist_5='/home/fmlheureux/workspace/StarCluster'
+let g:netrw_dirhist_6='/home/fmlheureux/workspace/StarCluster/starcluster'
