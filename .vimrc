@@ -3,6 +3,7 @@ set shiftwidth=4
 set softtabstop=4
 set autoindent
 set hlsearch
+set nu
 
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%81v.\+/
