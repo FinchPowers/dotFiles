@@ -36,3 +36,7 @@ noremap <silent> ,c :<C-B>sil <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<
 noremap <silent> ,u :<C-B>sil <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:noh<CR>
 
 execute pathogen#infect()
+
+" bash like <tab>
+set wildmode=longest,list
+set wildmenu
