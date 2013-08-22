@@ -8,12 +8,6 @@ set nu
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%81v.\+/
 
-" solarized
-" syntax enable
-" set background=dark
-" let g:solarized_termtrans = 1
-" colorscheme solarized
-
 " smart home
 noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
@@ -40,3 +34,10 @@ execute pathogen#infect()
 " bash like <tab>
 set wildmode=longest,list
 set wildmenu
+"
+" solarized
+syntax enable
+set background=dark
+let g:solarized_termtrans = 1
+colorscheme solarized
+

@@ -16,3 +16,6 @@
 [submodule ".vim/bundle/vim-overlength"]
 	path = .vim/bundle/vim-overlength
 	url = git@github.com:FinchPowers/vim-overlength.git
+[submodule ".vim/vim-colors-solarized"]
+	path = .vim/vim-colors-solarized
+	url = git@github.com:altercation/vim-colors-solarized.git
