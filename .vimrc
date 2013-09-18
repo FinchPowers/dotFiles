@@ -41,3 +41,9 @@ set background=dark
 let g:solarized_termtrans = 1
 colorscheme solarized
 
+set colorcolumn=80
+
+" taglist
+let Tlist_Auto_Open = 1
+let Tlist_Auto_Update = 1
+let Tlist_Exit_OnlyWindow = 1
