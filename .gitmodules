@@ -19,3 +19,12 @@
 [submodule ".vim/vim-colors-solarized"]
 	path = .vim/vim-colors-solarized
 	url = git@github.com:altercation/vim-colors-solarized.git
+[submodule ".vim/bundle/lusty"]
+	path = .vim/bundle/lusty
+	url = git@github.com:sjbach/lusty.git
+[submodule ".vim/bundle/vim-surround"]
+	path = .vim/bundle/vim-surround
+	url = git@github.com:tpope/vim-surround.git
+[submodule ".vim/bundle/vim-fswitch"]
+	path = .vim/bundle/vim-fswitch
+	url = git@github.com:derekwyatt/vim-fswitch.git
