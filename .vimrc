@@ -7,8 +7,8 @@ set nu
 set term=xterm-color
 set hidden
 
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.\+/
+"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%81v.\+/
 
 """"""""""""""
 " tmux fixes "
@@ -52,14 +52,22 @@ noremap <silent> ,c :<C-B>sil <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<
 noremap <silent> ,u :<C-B>sil <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:noh<CR>'"'
 
 " disables some pep8 errors. must run before pathogen
-" E201 - json identation police
-" E203 - json identation police
+" E201 - json indentation police
+" E203 - json indentation police
 " E221 - multiple spaces before operator -> anoying with alignment
-" E261 - inline comments start with 2 spaces
+" E261 - inline comments starts with 2 spaces
 " E262 - inline comments space after #
 " E401 - multiple imports same line
- let g:pymode_lint_ignore="E201,E203,E221,E261,E262,E401"
+" D100 - Missing docstring at the top of a file
+" D102 - Missing doctstring for a function or class
+ let g:pymode_lint_ignore="E201,E203,E221,E261,E262,E401,D100,D102"
  let g:pymode_folding = 0
+ let g:pymode_lint_checkers = "pyflakes,pep8,mccabe,pep257"
+ let g:pymode_rope_complete_on_dot = 0
+" closes the doc window when autocompleting with rope
+ autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+ autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+" ------
 
 " Pathogen load
 filetype off
@@ -97,3 +105,8 @@ set tags=./tags;/
 au! BufEnter *.cc,*.c let b:fswitchdst = 'h'
 au! BufEnter *.h let b:fswitchdst = 'cc,c'
 nmap <Leader>s :FSHere<CR>
+
+" CTRL P
+nmap <Leader>p :CtrlPBuffer<CR>
+let g:ctrlp_custom_ignore = 'build/x86_64'
+let g:ctrlp_working_path_mode = ''
