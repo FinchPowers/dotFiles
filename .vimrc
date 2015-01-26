@@ -7,9 +7,6 @@ set nu
 set term=xterm-color
 set hidden
 
-"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-"match OverLength /\%81v.\+/
-
 """"""""""""""
 " tmux fixes "
 """"""""""""""
@@ -110,3 +107,7 @@ nmap <Leader>s :FSHere<CR>
 nmap <Leader>p :CtrlPBuffer<CR>
 let g:ctrlp_custom_ignore = 'build/x86_64'
 let g:ctrlp_working_path_mode = ''
+
+" Show trailing whitespaces as ~
+set list
+set listchars=trail:~
