@@ -56,8 +56,10 @@ noremap <silent> ,u :<C-B>sil <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>/
 " E262 - inline comments space after #
 " E401 - multiple imports same line
 " D100 - Missing docstring at the top of a file
+" D100 - Missing docstring for a class
 " D102 - Missing doctstring for a function or class
- let g:pymode_lint_ignore="E201,E203,E221,E261,E262,E401,D100,D102"
+" D103 - Missing docstring for a function
+ let g:pymode_lint_ignore="E201,E203,E221,E261,E262,E401,D100,D101,D102,D103"
  let g:pymode_folding = 0
  let g:pymode_lint_checkers = "pyflakes,pep8,mccabe,pep257"
  let g:pymode_rope_complete_on_dot = 0
@@ -111,3 +113,10 @@ let g:ctrlp_working_path_mode = ''
 " Show trailing whitespaces as ~
 set list
 set listchars=trail:~
+
+" syntastic
+let g:syntastic_python_checkers=['flake8']
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
