@@ -121,3 +121,9 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_cpp_compiler_options = '-std=c++11'
+
+" terminal 256 colors
+set t_Co=256
+
+" 10 msec delay when pressing ESC
+set ttimeoutlen=10
