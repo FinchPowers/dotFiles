@@ -1,3 +1,72 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" plugin on GitHub repo
+
+" git plugin
+Plugin 'tpope/vim-fugitive'
+
+" autocompleter
+Plugin 'https://github.com/Valloric/YouCompleteMe.git'
+
+" search # of #
+Plugin 'https://github.com/henrik/vim-indexed-search'
+
+" Syntax Checking/Highlighting
+" TODO checkout version 0.8.1
+Plugin 'python-mode/python-mode'
+
+" autoclose quotes
+Plugin 'https://github.com/Raimondi/delimitMate.git'
+
+" :A .cc <-> .h
+Plugin 'https://github.com/vim-scripts/a.vim.git'
+
+" Directory explorer
+Plugin 'https://github.com/kien/ctrlp.vim.git'
+
+" Mini buffer explorer
+Plugin 'https://github.com/fholgado/minibufexpl.vim.git'
+
+" Align stuff
+Plugin 'https://github.com/godlygeek/tabular.git'
+
+" Bottom airline bar
+Plugin 'https://github.com/vim-airline/vim-airline.git'
+Plugin 'https://github.com/vim-airline/vim-airline-themes.git'
+
+" Plugin 'https://github.com/sjbach/lusty.git'
+
+" Left pane with tags/functions/classes
+Plugin 'https://github.com/vim-scripts/taglist.vim.git'
+
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+
+
+
+
+
+
+
+
+
+
+
 set expandtab
 set shiftwidth=4
 set softtabstop=4
@@ -6,6 +75,9 @@ set hlsearch
 set nu
 set term=xterm-color
 set hidden
+
+" since vim8, w/o it you can't backspace beyond the insert point
+set backspace=2
 
 """"""""""""""
 " tmux fixes "
@@ -64,6 +136,8 @@ noremap <silent> ,u :<C-B>sil <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>/
  let g:pymode_folding = 0
  let g:pymode_lint_checkers = "pyflakes,pep8,mccabe,pep257"
  let g:pymode_rope_complete_on_dot = 0
+ let g:pymode_rope_lookup_project = 0
+ let g:pymode_rope_completion = 0
 " closes the doc window when autocompleting with rope
  autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
  autocmd InsertLeave * if pumvisible() == 0|pclose|endif
@@ -128,3 +202,22 @@ set t_Co=256
 
 " 10 msec delay when pressing ESC
 set ttimeoutlen=10
+
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_global_ycm_extra_conf = '/home/fmlheureux/.ycm_extra_conf.py'
+let g:ycm_python_binary_path = '/usr/bin/python'
+"let g:ycm_show_diagnostics_ui = 1
+
+let python_highlight_all=1
+
+" broken...
+"python2 with virtualenv support
+"
+"py << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+"  project_base_dir = os.environ['VIRTUAL_ENV']
+"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"  execfile(activate_this, dict(__file__=activate_this))
+" EOF
