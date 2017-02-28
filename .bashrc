@@ -34,7 +34,7 @@ fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color) color_prompt=yes;;
+    xterm-color | xterm-256color | screeen) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
@@ -112,7 +112,7 @@ PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig/
 
 # colorss
 case "$TERM" in
-    xterm-color | xterm | screen) color_prompt=yes;;
+    xterm-256color | xterm-color | xterm | screen) color_prompt=yes;;
 esac
 
 
