@@ -37,7 +37,7 @@ Plugin 'https://github.com/vim-scripts/a.vim.git'
 Plugin 'https://github.com/kien/ctrlp.vim.git'
 
 " Mini buffer explorer
-Plugin 'https://github.com/fholgado/minibufexpl.vim.git'
+Plugin 'https://github.com/thasmin/minibufexpl.vim.git'
 
 " Align stuff
 Plugin 'https://github.com/godlygeek/tabular.git'
