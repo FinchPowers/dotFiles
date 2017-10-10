@@ -37,6 +37,7 @@ Plugin 'https://github.com/vim-scripts/a.vim.git'
 Plugin 'https://github.com/kien/ctrlp.vim.git'
 
 " Mini buffer explorer
+" Plugin 'https://github.com/fholgado/minibufexpl.vim.git'
 Plugin 'https://github.com/thasmin/minibufexpl.vim.git'
 
 " Align stuff
@@ -50,6 +51,8 @@ Plugin 'https://github.com/vim-airline/vim-airline-themes.git'
 
 " Left pane with tags/functions/classes
 Plugin 'https://github.com/vim-scripts/taglist.vim.git'
+
+Plugin 'https://github.com/tpope/vim-sensible.git'
 
 
 " All of your Plugins must be added before the following line
@@ -221,3 +224,5 @@ let python_highlight_all=1
 "  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
 "  execfile(activate_this, dict(__file__=activate_this))
 " EOF
+
+set noautoread
