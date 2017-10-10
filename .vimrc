@@ -120,7 +120,10 @@ au FileType vim let b:comment_leader = '" '
 au FileType c,cpp,java,javascript let b:comment_leader = '// '
 au FileType sh,make,coffee,python let b:comment_leader = '# '
 au FileType tex let b:comment_leader = '% '
-au FileType html,css,xml setl shiftwidth=2 expandtab tabstop=2 softtabstop=2
+
+au FileType make setl tabstop=2 noexpandtab softtabstop=2
+au FileType html,css,xml,rst setl shiftwidth=2 expandtab tabstop=2 softtabstop=2
+
 noremap <silent> ,c :<C-B>sil <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:noh<CR>
 noremap <silent> ,u :<C-B>sil <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:noh<CR>'"'
 
@@ -190,7 +193,7 @@ let g:ctrlp_working_path_mode = ''
 
 " Show trailing whitespaces as ~
 set list
-set listchars=trail:~
+set listchars=trail:~,tab:▸\ 
 
 " syntastic
 let g:syntastic_python_checkers=['flake8']
@@ -225,4 +228,5 @@ let python_highlight_all=1
 "  execfile(activate_this, dict(__file__=activate_this))
 " EOF
 
+" vim-sensible
 set noautoread
