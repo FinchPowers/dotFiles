@@ -150,3 +150,13 @@ alias egrep='egrep --color=auto'
 
 LS_COLORS='di=34:fi=0:ln=31:pi=5:so=5:bd=5:cd=5:or=31:mi=0:ex=35:*.rpm=90'
 export LS_COLORS
+
+if [ -n "$TMUX" ]; then
+    # Fixup per ssh connection vars when inside tmux
+    tmux_vars_fixup() {
+        eval $(tmux showenv -s DISPLAY)
+        eval $(tmux showenv -s SSH_AUTH_SOCK)
+    }
+else
+    tmux_vars_fixup() { return; }
+fi
