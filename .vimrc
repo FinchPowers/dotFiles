@@ -54,6 +54,8 @@ Plugin 'https://github.com/vim-scripts/taglist.vim.git'
 
 Plugin 'https://github.com/tpope/vim-sensible.git'
 
+Plugin 'https://github.com/tell-k/vim-autopep8.git'
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -138,7 +140,7 @@ noremap <silent> ,u :<C-B>sil <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>/
 " D100 - Missing docstring for a class
 " D102 - Missing doctstring for a function or class
 " D103 - Missing docstring for a function
- let g:pymode_lint_ignore="E201,E203,E221,E261,E262,E401,D100,D101,D102,D103"
+ " let g:pymode_lint_ignore="E201,E203,E221,E261,E262,E401,D100,D101,D102,D103"
  let g:pymode_folding = 0
  let g:pymode_lint_checkers = "pyflakes,pep8,mccabe,pep257"
  let g:pymode_rope_complete_on_dot = 0
