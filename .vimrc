@@ -25,7 +25,7 @@ Plugin 'https://github.com/henrik/vim-indexed-search'
 
 " Syntax Checking/Highlighting
 " TODO checkout version 0.8.1
-Plugin 'python-mode/python-mode'
+" Plugin 'python-mode/python-mode'
 
 " autoclose quotes
 Plugin 'https://github.com/Raimondi/delimitMate.git'
@@ -54,23 +54,16 @@ Plugin 'https://github.com/vim-scripts/taglist.vim.git'
 
 Plugin 'https://github.com/tpope/vim-sensible.git'
 
-Plugin 'https://github.com/tell-k/vim-autopep8.git'
+Plugin 'https://github.com/heavenshell/vim-pydocstring.git'
 
+Plugin 'vim-syntastic/syntastic'
+Plugin 'nvie/vim-flake8'
+
+Plugin 'leafgarland/typescript-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
-
-
-
-
-
-
-
-
-
-
-
 
 set expandtab
 set shiftwidth=4
@@ -102,8 +95,6 @@ set backspace=2
 ":imap <Home> <C-o><Home>
 ":imap <End> <C-o><End>
 
-:map <Home> :coco
-
 " Ctrl-{Left/Right} move buffer
 :map <C-left> :bp<CR>
 :map <C-right> :bn<CR>
@@ -119,12 +110,12 @@ let g:miniBufExplModSelTarget = 1
 " commenting/uncommenting a block of text
 au FileType haskell,vhdl,ada let b:comment_leader = '-- '
 au FileType vim let b:comment_leader = '" '
-au FileType c,cpp,java,javascript let b:comment_leader = '// '
+au FileType c,cpp,java,javascript,typescript let b:comment_leader = '// '
 au FileType sh,make,coffee,python let b:comment_leader = '# '
 au FileType tex let b:comment_leader = '% '
 
 au FileType make setl tabstop=2 noexpandtab softtabstop=2
-au FileType html,css,xml,rst setl shiftwidth=2 expandtab tabstop=2 softtabstop=2
+au FileType html,css,xml,rst,javascript,typescript setl shiftwidth=2 expandtab tabstop=2 softtabstop=2
 
 noremap <silent> ,c :<C-B>sil <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:noh<CR>
 noremap <silent> ,u :<C-B>sil <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:noh<CR>'"'
@@ -142,10 +133,15 @@ noremap <silent> ,u :<C-B>sil <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>/
 " D103 - Missing docstring for a function
  " let g:pymode_lint_ignore="E201,E203,E221,E261,E262,E401,D100,D101,D102,D103"
  let g:pymode_folding = 0
- let g:pymode_lint_checkers = "pyflakes,pep8,mccabe,pep257"
+ " let g:pymode_lint_checkers = "pyflakes,pep8,mccabe,pep257"
+ let g:pymode_rope = 1
+ "install
  let g:pymode_rope_complete_on_dot = 0
  let g:pymode_rope_lookup_project = 0
  let g:pymode_rope_completion = 0
+ let g:pymode_rope_regenerate_on_write = 0
+ let g:pymode_python = 'python3'
+ let g:pymode_rope_goto_definition_cmd = 'e'
 " closes the doc window when autocompleting with rope
  autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
  autocmd InsertLeave * if pumvisible() == 0|pclose|endif
@@ -198,7 +194,6 @@ set list
 set listchars=trail:~,tab:▸\ 
 
 " syntastic
-let g:syntastic_python_checkers=['flake8']
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
@@ -211,9 +206,13 @@ set t_Co=256
 " 10 msec delay when pressing ESC
 set ttimeoutlen=10
 
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_global_ycm_extra_conf = '/home/fmlheureux/.ycm_extra_conf.py'
-let g:ycm_python_binary_path = '/usr/bin/python'
+let g:ycm_autoclose_preview_window_after_completion=1
+"map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+:noremap <C-down> :YcmCompleter GoToDeclaration<CR>
+:noremap <C-up> :YcmCompleter GetDoc<CR>
+"let g:ycm_confirm_extra_conf = 0
+"let g:ycm_global_ycm_extra_conf = '/home/fmlheureux/.ycm_extra_conf.py'
+"let g:ycm_python_binary_path = '/usr/bin/python'
 "let g:ycm_show_diagnostics_ui = 1
 
 let python_highlight_all=1
@@ -232,3 +231,4 @@ let python_highlight_all=1
 
 " vim-sensible
 set noautoread
+"":noremap <C-down> :call pymode#rope#goto_definition()<CR>
