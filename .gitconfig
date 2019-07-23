@@ -1,0 +1,12 @@
+# This is Git's per-user configuration file.
+[user]
+    name = TODO
+    email = TODO@TODO.com
+    signingkey = TODO
+[commit]
+	gpgSign = 1
+[log]
+	abbrevCommit = 1
+	decorate = 1
+[format]
+        pretty = format:%C(auto)%h %ai %Cblue%<(15,trunc)%an%Creset %s
