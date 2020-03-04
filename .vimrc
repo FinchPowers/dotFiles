@@ -61,6 +61,8 @@ Plugin 'nvie/vim-flake8'
 
 Plugin 'leafgarland/typescript-vim'
 
+Plugin 'easymotion/vim-easymotion'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -115,33 +117,11 @@ au FileType sh,make,coffee,python let b:comment_leader = '# '
 au FileType tex let b:comment_leader = '% '
 
 au FileType make setl tabstop=2 noexpandtab softtabstop=2
-au FileType html,css,xml,rst,javascript,typescript setl shiftwidth=2 expandtab tabstop=2 softtabstop=2
+au FileType html,css,xml,rst,javascript,typescript,yaml,yml setl shiftwidth=2 expandtab tabstop=2 softtabstop=2
 
 noremap <silent> ,c :<C-B>sil <C-E>s/^/<C-R>=escape(b:comment_leader,'\/')<CR>/<CR>:noh<CR>
 noremap <silent> ,u :<C-B>sil <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>//e<CR>:noh<CR>'"'
 
-" disables some pep8 errors. must run before pathogen
-" E201 - json indentation police
-" E203 - json indentation police
-" E221 - multiple spaces before operator -> anoying with alignment
-" E261 - inline comments starts with 2 spaces
-" E262 - inline comments space after #
-" E401 - multiple imports same line
-" D100 - Missing docstring at the top of a file
-" D100 - Missing docstring for a class
-" D102 - Missing doctstring for a function or class
-" D103 - Missing docstring for a function
- " let g:pymode_lint_ignore="E201,E203,E221,E261,E262,E401,D100,D101,D102,D103"
- let g:pymode_folding = 0
- " let g:pymode_lint_checkers = "pyflakes,pep8,mccabe,pep257"
- let g:pymode_rope = 1
- "install
- let g:pymode_rope_complete_on_dot = 0
- let g:pymode_rope_lookup_project = 0
- let g:pymode_rope_completion = 0
- let g:pymode_rope_regenerate_on_write = 0
- let g:pymode_python = 'python3'
- let g:pymode_rope_goto_definition_cmd = 'e'
 " closes the doc window when autocompleting with rope
  autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
  autocmd InsertLeave * if pumvisible() == 0|pclose|endif
@@ -199,6 +179,10 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_cpp_compiler_options = '-std=c++11'
+let g:syntastic_python_checkers=['flake8']
+if filereadable("mypy.ini")
+    let g:syntastic_python_checkers += ['mypy']
+endif
 
 " terminal 256 colors
 set t_Co=256
@@ -208,6 +192,7 @@ set ttimeoutlen=10
 
 let g:ycm_autoclose_preview_window_after_completion=1
 "map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+:noremap <F2> :YcmCompleter GetType<CR>
 :noremap <C-down> :YcmCompleter GoToDeclaration<CR>
 :noremap <C-up> :YcmCompleter GetDoc<CR>
 "let g:ycm_confirm_extra_conf = 0
@@ -232,3 +217,25 @@ let python_highlight_all=1
 " vim-sensible
 set noautoread
 "":noremap <C-down> :call pymode#rope#goto_definition()<CR>
+
+let g:ycm_global_ycm_extra_conf = '~/global_ycm_extra_conf.py'
+
+function! Black()
+    w
+    silent !black %
+    redraw!
+    edit!
+    w
+endfunction
+
+function! Format()
+    w
+    silent !make format %
+    redraw!
+    edit!
+    w
+endfunction
+
+:let mapleader="é"
+
+set scrolloff=5
