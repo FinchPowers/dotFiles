@@ -63,6 +63,8 @@ Plugin 'leafgarland/typescript-vim'
 
 Plugin 'easymotion/vim-easymotion'
 
+Plugin 'altercation/vim-colors-solarized'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -126,16 +128,6 @@ noremap <silent> ,u :<C-B>sil <C-E>s/^\V<C-R>=escape(b:comment_leader,'\/')<CR>/
  autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
  autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 " ------
-
-" Pathogen load
-filetype off
-
-call pathogen#infect()
-call pathogen#helptags()
-
-filetype plugin indent on
-syntax on
-
 
 " bash like <tab>
 set wildmode=longest,list
@@ -202,21 +194,8 @@ let g:ycm_autoclose_preview_window_after_completion=1
 
 let python_highlight_all=1
 
-" broken...
-"python2 with virtualenv support
-"
-"py << EOF
-"import os
-"import sys
-"if 'VIRTUAL_ENV' in os.environ:
-"  project_base_dir = os.environ['VIRTUAL_ENV']
-"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-"  execfile(activate_this, dict(__file__=activate_this))
-" EOF
-
 " vim-sensible
 set noautoread
-"":noremap <C-down> :call pymode#rope#goto_definition()<CR>
 
 let g:ycm_global_ycm_extra_conf = '~/global_ycm_extra_conf.py'
 
@@ -239,3 +218,6 @@ endfunction
 :let mapleader="é"
 
 set scrolloff=5
+
+let g:pydocstring_doq_path = '/Users/francois-mi.lheureux/.pyenv/shims/doq'
+let g:pydocstring_formatter = 'google'
