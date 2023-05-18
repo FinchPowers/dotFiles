@@ -1,0 +1,6 @@
+[flake8]
+max-line-length = 100
+exclude =
+    .venv
+docstring-convention = google
+ignore=D1,D401,D413,W503,E203

@@ -1,0 +1,17 @@
+FILES := src tests
+
+.PHONY: format
+format:
+	poetry run black $(FILES)
+	poetry run isort $(FILES)
+
+.PHONY: lint
+lint:
+	poetry run flake8 $(FILES)
+	poetry run mypy --explicit-package-bases $(FILES)
+	poetry run bandit -r -ll $(FILES)
+
+.PHONY: test
+test:
+	poetry run pytest -s --cov=src --cov-report=term-missing --junitxml=test-results/test-results.xml --cov-branch tests
+
