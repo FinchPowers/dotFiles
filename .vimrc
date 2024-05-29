@@ -63,6 +63,10 @@ Plugin 'easymotion/vim-easymotion'
 
 Plugin 'altercation/vim-colors-solarized'
 
+Plugin 'github/copilot.vim'
+
+Plugin 'vim-pandoc/vim-pandoc-syntax'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -73,7 +77,8 @@ set softtabstop=4
 set autoindent
 set hlsearch
 set nu
-set term=xterm-color
+"set term=xterm-256color
+" allows to move away from unsaved buffer
 set hidden
 
 " since vim8, w/o it you can't backspace beyond the insert point
@@ -81,8 +86,8 @@ set backspace=2
 
 
 " Ctrl-{Left/Right} move buffer
-:map <C-left> :bp<CR>
-:map <C-right> :bn<CR>
+:map <C-left> :bp!<CR>
+:map <C-right> :bn!<CR>
 
 let g:miniBufExplMapWindowNavVim = 0
 let g:miniBufExplMapWindowNavArrows = 0
@@ -116,7 +121,7 @@ set background=dark
 let g:solarized_termtrans = 1
 colorscheme solarized
 
-set colorcolumn=80
+set colorcolumn=80,100,120
 
 " taglist
 let Tlist_Auto_Open = 1
@@ -162,22 +167,6 @@ set noautoread
 
 let g:ycm_global_ycm_extra_conf = '~/global_ycm_extra_conf.py'
 
-function! Black()
-    w
-    silent !black %
-    redraw!
-    edit!
-    w
-endfunction
-
-function! Format()
-    w
-    silent !make format %
-    redraw!
-    edit!
-    w
-endfunction
-
 :let mapleader="é"
 
 set scrolloff=5
@@ -190,14 +179,14 @@ let g:pydocstring_doq_path = ".venv/bin/doq"
 
 " ale
 let g:ale_fixers_python = []
-if filereadable(".venv/bin/isort")
-    let g:ale_fixers_python += ['isort']
-endif
-if filereadable(".venv/bin/flake8")
+if filereadable(".venv/bin/black")
     let g:ale_fixers_python += ['black']
 endif
+if filereadable(".venv/bin/ruff")
+    let g:ale_fixers_python += ['ruff']
+endif
 let g:ale_fixers = {
-\   'python': ale_fixers_python,
+\   'python': ale_fixers_python
 \}
 " run linters on save
 let g:ale_fix_on_save = 1
@@ -207,3 +196,25 @@ let g:ale_set_loclist = 1
 let g:ale_set_quickfix = 0
 " automatically open the bottom list on errors
 let g:ale_open_list = 1
+
+" git color for overlength summary
+" check vim color options with `:hi`
+" vim builtin colors for git
+" https://github.com/vim/vim/blob/master/runtime/syntax/gitcommit.vim
+au FileType gitcommit
+ \ hi gitcommitOverflow ctermfg=red
+
+" copilot config
+" CTRL + A to accept
+imap <silent><script><expr> <C-A> copilot#Accept("\<CR>")
+" don't do anything with <TAB>
+let g:copilot_no_tab_map = v:true
+" CTRL + Shift + Down for next suggestion
+imap <C-S-Down> <Plug>(copilot-next)
+" CTRL + Shift + Up for previous suggestion
+imap <C-S-Up> <Plug>(copilot-previous)
+
+" solarized does not trigger on mdx files
+augroup pandoc_syntax
+    au! BufNewFile,BufFilePre,BufRead *.mdx set filetype=markdown.pandoc
+augroup END
