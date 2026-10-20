@@ -206,7 +206,8 @@ test_help() {
 test_ls() {
   mkwt feat && touch $R/repo/feat/untracked
   out=$(wt ls 2>&1)
-  [[ $out == *$'\n'"feat "*" feat "*"  1 dirty  -0 +1"* ]] || fail "output: $out"
+  [[ $out == "Folder "*" Branch "*" Dirty vs base "*" Stack"$'\n'* ]] || fail "header: $out"
+  [[ $out == *$'\n'"feat "*" feat "*" 1 -0 +1"* ]] || fail "output: $out"
 }
 
 test_ls_stack() {

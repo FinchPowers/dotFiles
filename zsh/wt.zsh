@@ -129,11 +129,18 @@ wt-ls() {
   local main=$(_wt_main) base=$(_wt_base) spice
   [[ -n $main ]] || { echo "not in a git repo"; return 1; }
   spice=$(git-spice -C $main log short -a --json 2>/dev/null)
+  # header cells: bold underlined italic, like pls (escapes only on a terminal)
+  local s= r= red= grn=
+  [[ -t 1 ]] && { s=$'\e[1;4;3m'; r=$'\e[0m'; red=$'\e[31m'; grn=$'\e[32m'; }
+  printf "$s%-40s$r $s%-40s$r $s%10s$r $s%-9s$r ${s}Stack$r\n" Folder Branch Dirty "vs base"
   git -C $main worktree list --porcelain | awk '/^worktree/{print $2}' | while read d; do
-    local b=$(git -C $d branch --show-current)
-    printf '%-40s %-40s %3s dirty  %-9s %s\n' "${d##*/}" "$b" \
+    local b=$(git -C $d branch --show-current) vs= pad=9
+    local -a n=($(git -C $d rev-list --left-right --count origin/$base...HEAD 2>/dev/null))
+    # colour after measuring: escape codes would throw off the column padding
+    (( $#n )) && { pad=$(( 9 - ${#n[1]} - ${#n[2]} - 2 )); vs="$red-$n[1]$r $grn+$n[2]$r"; }
+    printf '%-40s %-40s %10s %s%*s %s\n' "${d##*/}" "$b" \
       "$(git -C $d status --porcelain | wc -l | tr -d ' ')" \
-      "$(git -C $d rev-list --left-right --count origin/$base...HEAD 2>/dev/null | awk '{print "-"$1" +"$2}')" \
+      "$vs" $(( pad > 0 ? pad : 0 )) "" \
       "$(_wt_stack "$spice" "$b" "$base")"
   done
 }
