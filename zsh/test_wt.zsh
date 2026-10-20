@@ -209,6 +209,27 @@ test_ls() {
   [[ $out == *$'\n'"feat "*" feat "*"  1 dirty  -0 +1"* ]] || fail "output: $out"
 }
 
+test_ls_stack() {
+  mkwt B
+  # B sits on A, C on B; D is a separate stack off master
+  local json='{"name":"A","down":{"name":"master"},"ups":[{"name":"B"}]}
+{"name":"B","down":{"name":"A"},"ups":[{"name":"C"}]}
+{"name":"C","down":{"name":"B"}}
+{"name":"D","down":{"name":"master"}}
+{"name":"master","current":true,"ups":[{"name":"A"},{"name":"D"}]}'
+  [[ $(_wt_stack $json B master) == "A > *B > C" ]] || fail "stack of B: $(_wt_stack $json B master)"
+  [[ -z $(_wt_stack $json D master) ]] || fail "D should be alone"
+  [[ -z $(_wt_stack $json master master) ]] || fail "base should have no stack"
+  [[ -z $(_wt_stack "" B master) ]] || fail "no spice data should give no stack"
+  [[ -z $(_wt_stack $json "" master) ]] || fail "detached HEAD should give no stack"
+  # git-spice has also been seen printing one pretty-printed array instead of a stream
+  [[ $(_wt_stack "$(print -r -- $json | jq -s .)" B master) == "A > *B > C" ]] || fail "array input"
+  git-spice() { [[ $* == *"log short"* ]] && print -r -- $json; }
+  out=$(wt ls 2>&1)
+  unfunction git-spice; git-spice() { print -r -- "$*" >> $R/spice.log; }
+  [[ $out == *$'\n'"B "*"A > *B > C" ]] || fail "output: $out"
+}
+
 # --- runner ---
 
 integer passed failed

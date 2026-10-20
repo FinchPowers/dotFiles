@@ -109,15 +109,32 @@ wt-clean() {
   done
 }
 
-# wt ls → one line per worktree: folder, branch, dirty count, behind/ahead of the default branch
+# _wt_stack <git-spice log json> <branch> <base> → the stack containing <branch>, bottom to top
+# (siblings flattened in order), <branch> starred. Empty when it's alone in its stack or is the base.
+_wt_stack() {
+  [[ -n $1 && -n $2 && $2 != $3 ]] || return 0   # no spice data, detached HEAD, or the base
+  jq -rs --arg b $2 --arg base $3 '
+    (flatten | map({(.name): .}) | add) as $m
+    | def root($n): ($m[$n].down.name // "") as $d
+        | if $d == "" or $d == $base then $n else root($d) end;
+      def sub($n): $n, ($m[$n].ups // [] | .[].name | sub(.));
+      if $m[$b] == null then empty
+      else [sub(root($b))] | select(length > 1) | map(if . == $b then "*" + . else . end) | join(" > ")
+      end' <<<$1
+}
+
+# wt ls → one line per worktree: folder, branch, dirty count, behind/ahead of the default branch,
+# and the git-spice stack the branch belongs to (only when it has more than one branch)
 wt-ls() {
-  local main=$(_wt_main) base=$(_wt_base)
+  local main=$(_wt_main) base=$(_wt_base) spice
   [[ -n $main ]] || { echo "not in a git repo"; return 1; }
+  spice=$(git-spice -C $main log short -a --json 2>/dev/null)
   git -C $main worktree list --porcelain | awk '/^worktree/{print $2}' | while read d; do
-    printf '%-40s %-40s %3s dirty  %s\n' "${d##*/}" \
-      "$(git -C $d branch --show-current)" \
+    local b=$(git -C $d branch --show-current)
+    printf '%-40s %-40s %3s dirty  %-9s %s\n' "${d##*/}" "$b" \
       "$(git -C $d status --porcelain | wc -l | tr -d ' ')" \
-      "$(git -C $d rev-list --left-right --count origin/$base...HEAD 2>/dev/null | awk '{print "-"$1" +"$2}')"
+      "$(git -C $d rev-list --left-right --count origin/$base...HEAD 2>/dev/null | awk '{print "-"$1" +"$2}')" \
+      "$(_wt_stack "$spice" "$b" "$base")"
   done
 }
 
@@ -131,7 +148,8 @@ usage: wt <command> [args]
                      and cd into it; if a worktree already has it, just cd there
   go [target]        cd into a worktree across $WT_REPOS: target matches a folder or branch name
                      (exact first, then fuzzy via fzf); no target opens the fzf picker
-  ls                 list this repo's worktrees: folder, branch, dirty count, behind/ahead
+  ls                 list this repo's worktrees: folder, branch, dirty count, behind/ahead,
+                     and the git-spice stack (bottom to top, current branch starred) if stacked
   rm                 remove the current worktree if its PR is merged, then git-spice repo sync
   clean [-n]         remove every clean worktree whose PR is merged, then git-spice repo sync
                      (-n: only list what would be removed)
