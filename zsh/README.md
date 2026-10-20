@@ -15,7 +15,8 @@ Commands: `new`, `co`, `go`, `ls`, `rm`, `clean`. Run `wt --help` for what each 
 
 ### Tests
 
-`test_wt.zsh` tests every command except `go`, which is an interactive fzf picker. Each test
+`test_wt.zsh` tests every command. For `go` it covers only the non-interactive paths (exact
+name, stack lookup), not the fzf picker. Each test
 builds a throwaway repo with a local bare `origin` in a temp folder. Git runs for real; `gh`
 and `git-spice` are replaced by stub functions, so the tests need no network or GitHub access,
 and your own git config and hooks stay out of them.

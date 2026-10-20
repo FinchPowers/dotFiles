@@ -80,7 +80,8 @@ test_co_local_branch() {
   wt co feat >/dev/null 2>&1 || fail "wt co failed"
   [[ $PWD == $R/repo/feat ]] || fail "cwd $PWD"
   [[ $(git branch --show-current) == feat ]] || fail "branch $(git branch --show-current)"
-  [[ -s $R/spice.log ]] && fail "git-spice called: $(<$R/spice.log)"
+  # reading the stack (log short) is fine; tracking or checking out anything is not
+  grep -qv "log short" $R/spice.log && fail "git-spice mutated: $(<$R/spice.log)"
 }
 
 test_co_remote_branch() {
@@ -206,8 +207,71 @@ test_help() {
 test_ls() {
   mkwt feat && touch $R/repo/feat/untracked
   out=$(wt ls 2>&1)
-  [[ $out == "Folder "*" Branch "*" Dirty vs base "*" Stack"$'\n'* ]] || fail "header: $out"
+  [[ $out == "Directory "*" Branch "*" Dirty vs base "*" Stack"$'\n'* ]] || fail "header: $out"
   [[ $out == *$'\n'"feat "*" feat "*" 1 -0 +1"* ]] || fail "output: $out"
+}
+
+test_ls_clips_long_names() {
+  local long=feature-with-a-very-long-name-that-overflows-the-column
+  mkwt $long
+  out=$(wt ls 2>&1)
+  [[ $(_wt_clip $long 40) == "feature-with-a-very-long-name-that-ov..." ]] || fail "clip: $(_wt_clip $long 40)"
+  [[ $(_wt_clip short 40) == short ]] || fail "short name changed"
+  [[ $out != *$long* ]] || fail "full name leaked: $out"
+  [[ $out == *$'\n'"feature-with-a-very-long-name-that-ov... feature-with-a-very-long-name-that-ov... "* ]] || fail "output: $out"
+}
+
+# git-spice stub that reports a stack A > B > C (A checked out in $R/repo/A) plus a lone branch D
+stack_stub() {
+  STACK_JSON='{"name":"A","down":{"name":"master"},"ups":[{"name":"B"}],"worktree":"'$R'/repo/A"}
+{"name":"B","down":{"name":"A"},"ups":[{"name":"C"}]}
+{"name":"C","down":{"name":"B"}}
+{"name":"D","down":{"name":"master"}}
+{"name":"master","current":true,"ups":[{"name":"A"},{"name":"D"}]}'
+  git-spice() {
+    if [[ $* == *"log short"* ]]; then print -r -- $STACK_JSON; else print -r -- "$*" >> $R/spice.log; fi
+  }
+}
+
+test_find() {
+  stack_stub
+  [[ $(_wt_find $STACK_JSON A master) == $R/repo/A ]] || fail "A: $(_wt_find $STACK_JSON A master)"
+  [[ $(_wt_find $STACK_JSON C master) == $R/repo/A ]] || fail "C should resolve to A's worktree"
+  [[ -z $(_wt_find $STACK_JSON D master) ]] || fail "D has no worktree in its stack"
+  [[ -z $(_wt_find $STACK_JSON nope master) ]] || fail "untracked branch"
+  [[ -z $(_wt_find $STACK_JSON master master) ]] || fail "base"
+  [[ -z $(_wt_find "" C master) ]] || fail "no spice data"
+}
+
+test_co_stack_reuses_worktree() {
+  mkwt A; stack_stub
+  wt co C || fail "wt co C failed"
+  [[ $PWD == $R/repo/A ]] || fail "cwd: $PWD"
+  [[ -e $R/repo/C ]] && fail "created a second worktree for C"
+  grep -q -- "-C $R/repo/A branch checkout C" $R/spice.log || fail "no checkout: $(< $R/spice.log)"
+}
+
+test_co_stack_unrelated_branch_creates_worktree() {
+  mkwt A; stack_stub
+  git -C $(MAIN) branch D
+  wt co D || fail "wt co D failed"
+  [[ $PWD == $R/repo/D ]] || fail "cwd: $PWD"
+}
+
+test_go_stack_reuses_worktree() {
+  mkwt A; stack_stub
+  WT_REPOS=($(MAIN))
+  wt go C || fail "wt go C failed"
+  [[ $PWD == $R/repo/A ]] || fail "cwd: $PWD"
+  grep -q -- "-C $R/repo/A branch checkout C" $R/spice.log || fail "no checkout: $(< $R/spice.log)"
+}
+
+test_go_exact_name_skips_checkout() {
+  mkwt A; stack_stub
+  WT_REPOS=($(MAIN))
+  wt go A || fail "wt go A failed"
+  [[ $PWD == $R/repo/A ]] || fail "cwd: $PWD"
+  grep -q "checkout" $R/spice.log && fail "checkout ran for an exact match"
 }
 
 test_ls_stack() {
